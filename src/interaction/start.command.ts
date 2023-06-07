@@ -1,8 +1,8 @@
-import { Markup, Telegraf } from 'telegraf';
-import { BotContext } from '../models/config.model';
-import { Guard } from '../services/guard';
-import { Command } from './general.command';
-import { ScenesID } from '../constants/constants';
+import { Telegraf } from 'telegraf';
+import { BotContext } from '../models/config.model.js';
+import { Guard } from '../services/guard.js';
+import { Command } from './general.command.js';
+import { ScenesID } from '../constants/constants.js';
 
 export class Start extends Command {
   constructor(public bot: Telegraf<BotContext>, private guard: Guard) {
@@ -11,9 +11,9 @@ export class Start extends Command {
   public handle(): void {
     this.bot.start(async (ctx) => {
       try {
-        const user = (await ctx.from.first_name) ? ctx.from.first_name : 'Stranger';
-        if (this.guard.isAuthorized()) {
-          await ctx.reply(`Hi dear ${user}. Bot has already prepared for conversation`);
+        const { first_name = 'Stranger', id: userID = 0 } = await ctx.from!;
+        if (this.guard.isAuthorized(userID)) {
+          await ctx.reply(`Hi dear ${first_name}. Bot has already prepared for conversation`);
         } else {
           await ctx.scene.enter(ScenesID.PASSWORD);
         }

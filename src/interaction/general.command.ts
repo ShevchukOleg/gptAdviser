@@ -1,4 +1,4 @@
-import { BotContext } from '../models/config.model';
+import { BotContext } from '../models/config.model.js';
 import { Telegraf } from 'telegraf';
 
 export abstract class Command {

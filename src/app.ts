@@ -1,13 +1,13 @@
 import { Scenes, Telegraf, session } from 'telegraf';
-import { ENV_BOT_TOKEN_KEY, ScenesID } from './constants/constants';
-import { Command } from './interaction/general.command';
-import { Start } from './interaction/start.command';
-import { Сorrespondence } from './interaction/text.command';
-import { Voice } from './interaction/voice.command';
-import { BotContext, ConfigServiceModel } from './models/config.model';
-import { ConfigService } from './services/config.s';
-import { Guard } from './services/guard';
-import { SceneCreator } from './services/scene-creator';
+import { EnvConstants, ScenesID } from './constants/constants.js';
+import { Command } from './interaction/general.command.js';
+import { Start } from './interaction/start.command.js';
+import { Сorrespondence } from './interaction/text.command.js';
+import { Voice } from './interaction/voice.command.js';
+import { BotContext, ConfigServiceModel } from './models/config.model.js';
+import { ConfigService } from './services/config-service.js';
+import { Guard } from './services/guard.js';
+import { SceneCreator } from './services/scene-creator.js';
 // import LocalSession from 'telegraf-session-local';
 
 class Bot {
@@ -17,8 +17,8 @@ class Bot {
   public guard = guard;
   public scenes = new Map<string, Scenes.BaseScene<BotContext>>();
   constructor(private readonly configService: ConfigServiceModel, private readonly sceneCreator: SceneCreator) {
-    this.bot = new Telegraf(this.configService.get(ENV_BOT_TOKEN_KEY));
-    this.taskHandlerList = [new Start(this.bot, guard), new Voice(this.bot), new Сorrespondence(this.bot)];
+    this.bot = new Telegraf(this.configService.get(EnvConstants.ENV_BOT_TOKEN_KEY));
+    this.taskHandlerList = [new Start(this.bot, guard), new Voice(this.bot, guard), new Сorrespondence(this.bot, guard)];
     // this.bot.use(new LocalSession({ database: 'sessions_db.json' }).middleware());
   }
 
@@ -68,6 +68,6 @@ class Bot {
   }
 }
 
-const guard = new Guard(1);
+const guard = new Guard(new ConfigService().get(EnvConstants.PASS));
 const bot = new Bot(new ConfigService(), new SceneCreator(guard));
 bot.initBot();

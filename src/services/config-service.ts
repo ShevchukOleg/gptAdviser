@@ -1,7 +1,7 @@
 import { DotenvParseOutput, config } from 'dotenv';
-import { ErrorMessages } from '../constants/constants';
-import { ConfigServiceModel } from '../models/config.model';
-import { runtimeError } from '../utils/error.handlers';
+import { ErrorMessages } from '../constants/constants.js';
+import { ConfigServiceModel } from '../models/config.model.js';
+import { runtimeError } from '../utils/error.handlers.js';
 
 export class ConfigService implements ConfigServiceModel {
   private env: DotenvParseOutput | null = null;

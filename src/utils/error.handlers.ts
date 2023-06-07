@@ -1,4 +1,4 @@
-import { ErrorMessages } from '../constants/constants';
+import { ErrorMessages } from '../constants/constants.js';
 
 export function runtimeError(message: ErrorMessages | string): never {
   if (message === '') {

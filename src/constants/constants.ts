@@ -1,4 +1,7 @@
-export const ENV_BOT_TOKEN_KEY = 'TOKEN';
+export enum EnvConstants {
+  ENV_BOT_TOKEN_KEY = 'dbGRE66pe8L6',
+  PASS = 'yev2893ZHFvB',
+}
 
 export enum ErrorMessages {
   NO_CONFIG_KEY = 'There are no such keys in the configuration',
@@ -11,5 +14,7 @@ export enum ScenesID {
 
 export enum Actions {
   INCOMING_PASSWORD = '<= pass',
+  INCOMING_PASSWORD_GENERAL = '<= pass from general chat',
   REJECT_PASSWORD_INPUT = 'reject pass',
+  BAN = 'repeated refusal',
 }
