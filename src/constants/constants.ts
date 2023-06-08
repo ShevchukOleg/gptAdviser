@@ -1,6 +1,7 @@
 export enum EnvConstants {
   ENV_BOT_TOKEN_KEY = 'dbGRE66pe8L6',
   PASS = 'yev2893ZHFvB',
+  OPEN_AI_API_KEY = 'H72X9m7vHi',
 }
 
 export enum ErrorMessages {

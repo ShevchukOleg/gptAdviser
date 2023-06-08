@@ -13,8 +13,6 @@ class OggConverter {
     Ffmpeg.setFfmpegPath(installer.path);
   }
 
-  public getOgg(oggPath: string) {}
-
   public async save(url: string, userID: string, fileName: string): Promise<string> {
     const oggPath = resolve(dirName, `../voices`, `${fileName + '_' + userID}.ogg`);
 
@@ -30,6 +28,7 @@ class OggConverter {
       response.data.pipe(stream);
 
       stream.on('error', (err) => {
+        rejects(err);
         console.log(err);
       });
 

@@ -7,7 +7,7 @@ export class ConfigService implements ConfigServiceModel {
   private env: DotenvParseOutput | null = null;
 
   constructor() {
-    this.obtainConfig();
+    this.env = this.obtainConfig();
   }
 
   public obtainConfig() {
@@ -16,7 +16,7 @@ export class ConfigService implements ConfigServiceModel {
     if (error || !parsed) {
       throw new Error(ErrorMessages.NO_CONFIG);
     }
-    this.env = parsed;
+    return parsed;
   }
 
   public get(k: string): string {

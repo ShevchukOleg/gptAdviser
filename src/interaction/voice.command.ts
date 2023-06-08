@@ -5,9 +5,10 @@ import { Guard } from '../services/guard.js';
 import { ogg } from '../services/ogg.converter.js';
 import { runtimeError } from '../utils/error.handlers.js';
 import { Command } from './general.command.js';
+import { OpenAIService } from '../services/openAI-service.js';
 
 export class Voice extends Command {
-  constructor(public bot: Telegraf<BotContext>, private guard: Guard) {
+  constructor(public bot: Telegraf<BotContext>, private guard: Guard, private readonly openAIService: OpenAIService) {
     super(bot);
   }
   public handle(): void {
@@ -18,7 +19,9 @@ export class Voice extends Command {
         const userId = String(ctx.message.from.id);
         const currentOggPath = await ogg.save(href, userId, fileId);
 
-        const convertedMP3 = ogg.toMp3(currentOggPath);
+        const convertedMP3 = await ogg.toMp3(currentOggPath);
+        const messageText = await this.openAIService.transcription(convertedMP3);
+        const response = await this.openAIService.chat(messageText);
         await ctx.reply(JSON.stringify(href));
       } catch (err: unknown) {
         if (err instanceof Error) {

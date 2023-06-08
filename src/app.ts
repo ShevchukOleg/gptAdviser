@@ -8,17 +8,28 @@ import { BotContext, ConfigServiceModel } from './models/config.model.js';
 import { ConfigService } from './services/config-service.js';
 import { Guard } from './services/guard.js';
 import { SceneCreator } from './services/scene-creator.js';
+import { OpenAIService } from './services/openAI-service.js';
 // import LocalSession from 'telegraf-session-local';
 
 class Bot {
   public bot: Telegraf<BotContext>;
   public stage: any;
   public taskHandlerList: Command[] = [];
-  public guard = guard;
+  public guard: Guard;
   public scenes = new Map<string, Scenes.BaseScene<BotContext>>();
-  constructor(private readonly configService: ConfigServiceModel, private readonly sceneCreator: SceneCreator) {
+  constructor(
+    private readonly configService: ConfigServiceModel,
+    private readonly openAIService: OpenAIService,
+    private readonly sceneCreator: SceneCreator,
+    public guardInstance: Guard
+  ) {
     this.bot = new Telegraf(this.configService.get(EnvConstants.ENV_BOT_TOKEN_KEY));
-    this.taskHandlerList = [new Start(this.bot, guard), new Voice(this.bot, guard), new Сorrespondence(this.bot, guard)];
+    this.guard = guardInstance;
+    this.taskHandlerList = [
+      new Start(this.bot, this.guard),
+      new Voice(this.bot, this.guard, this.openAIService),
+      new Сorrespondence(this.bot, this.guard),
+    ];
     // this.bot.use(new LocalSession({ database: 'sessions_db.json' }).middleware());
   }
 
@@ -68,6 +79,12 @@ class Bot {
   }
 }
 
-const guard = new Guard(new ConfigService().get(EnvConstants.PASS));
-const bot = new Bot(new ConfigService(), new SceneCreator(guard));
+const configServiceSingleton = new ConfigService();
+const guardIns = new Guard(configServiceSingleton.get(EnvConstants.PASS));
+const bot = new Bot(
+  configServiceSingleton,
+  new OpenAIService(configServiceSingleton.get(EnvConstants.OPEN_AI_API_KEY)),
+  new SceneCreator(guardIns),
+  guardIns
+);
 bot.initBot();
