@@ -6,7 +6,7 @@ export enum EnvConstants {
 
 export enum ErrorMessages {
   NO_CONFIG_KEY = 'There are no such keys in the configuration',
-  NO_CONFIG = 'Cant obtain base config',
+  NO_CONFIG = 'Cant obtain base config from .env file',
 }
 
 export enum ScenesID {
@@ -18,4 +18,10 @@ export enum Actions {
   INCOMING_PASSWORD_GENERAL = '<= pass from general chat',
   REJECT_PASSWORD_INPUT = 'reject pass',
   BAN = 'repeated refusal',
+}
+
+export enum InteractionRole {
+  ASSISTANT = 'assistant',
+  USER = 'user',
+  SYSTEM = 'system',
 }

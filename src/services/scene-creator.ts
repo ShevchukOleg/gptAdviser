@@ -19,13 +19,12 @@ export class SceneCreator {
 
     passwordScene.leave(async (ctx) => {
       const authorizationStatus = this.guard.isAuthorized(ctx.from!.id)
-        ? 'Authorization compleated.'
+        ? 'Authorization compleated. You can ask anything with voice messages or by text. Dialog of different interaction types saved separately.'
         : 'Ви покинули діалог авторизації🤫';
       ctx.reply(authorizationStatus);
     });
 
     passwordScene.action(Actions.INCOMING_PASSWORD, async (ctx) => {
-      console.log('Password scene generator action hendler: INCOMING_PASSWORD');
       if (this.guard.isBlocked(ctx.from!.id)) ctx.scene.leave();
       await ctx.reply('Будьласка введіть повний стаціонарний телефон будинку 86 Гв. Дивізії №1');
     });

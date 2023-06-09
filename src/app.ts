@@ -7,30 +7,26 @@ import { Voice } from './interaction/voice.command.js';
 import { BotContext, ConfigServiceModel } from './models/config.model.js';
 import { ConfigService } from './services/config-service.js';
 import { Guard } from './services/guard.js';
-import { SceneCreator } from './services/scene-creator.js';
 import { OpenAIService } from './services/openAI-service.js';
-// import LocalSession from 'telegraf-session-local';
+import { SceneCreator } from './services/scene-creator.js';
 
 class Bot {
   public bot: Telegraf<BotContext>;
   public stage: any;
   public taskHandlerList: Command[] = [];
-  public guard: Guard;
   public scenes = new Map<string, Scenes.BaseScene<BotContext>>();
   constructor(
+    public openAIService: OpenAIService,
+    public guardInstance: Guard,
     private readonly configService: ConfigServiceModel,
-    private readonly openAIService: OpenAIService,
-    private readonly sceneCreator: SceneCreator,
-    public guardInstance: Guard
+    private readonly sceneCreator: SceneCreator
   ) {
     this.bot = new Telegraf(this.configService.get(EnvConstants.ENV_BOT_TOKEN_KEY));
-    this.guard = guardInstance;
     this.taskHandlerList = [
-      new Start(this.bot, this.guard),
-      new Voice(this.bot, this.guard, this.openAIService),
-      new Сorrespondence(this.bot, this.guard),
+      new Start(this.bot, this.guardInstance),
+      new Voice(this.bot, this.guardInstance, openAIService),
+      new Сorrespondence(this.bot, this.guardInstance, openAIService),
     ];
-    // this.bot.use(new LocalSession({ database: 'sessions_db.json' }).middleware());
   }
 
   public initBot(): void {
@@ -82,9 +78,9 @@ class Bot {
 const configServiceSingleton = new ConfigService();
 const guardIns = new Guard(configServiceSingleton.get(EnvConstants.PASS));
 const bot = new Bot(
-  configServiceSingleton,
   new OpenAIService(configServiceSingleton.get(EnvConstants.OPEN_AI_API_KEY)),
-  new SceneCreator(guardIns),
-  guardIns
+  guardIns,
+  configServiceSingleton,
+  new SceneCreator(guardIns)
 );
 bot.initBot();

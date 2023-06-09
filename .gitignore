@@ -1,5 +1,5 @@
 /dist
 /node_modules
 sessions_db.json
-.env
 /voices
+.env

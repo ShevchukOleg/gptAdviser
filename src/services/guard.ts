@@ -11,7 +11,6 @@ export class Guard {
 
   public checkPassword(password: string, userID: number): boolean {
     const result = this.checkPassHash(password) ? (this.authorizedUsers.push(userID), true) : false;
-    console.log(String(password) === this.correctPassword, this.authorizedUsers);
     return result;
     // return String(password) === this.correctPassword ? (this.authorizedUsers.push(userID), true) : false;
   }

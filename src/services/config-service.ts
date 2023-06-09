@@ -4,31 +4,27 @@ import { ConfigServiceModel } from '../models/config.model.js';
 import { runtimeError } from '../utils/error.handlers.js';
 
 export class ConfigService implements ConfigServiceModel {
-  private env: DotenvParseOutput | null = null;
+  private env: DotenvParseOutput | NodeJS.ProcessEnv = {};
 
   constructor() {
     this.env = this.obtainConfig();
+    console.log('Base config: ', this.env);
   }
 
   public obtainConfig() {
     const { error, parsed } = config();
+    console.log('obtainConfig Error: ', error);
+    console.log('obtainConfig parsedData: ', parsed);
 
-    if (error || !parsed) {
-      throw new Error(ErrorMessages.NO_CONFIG);
-    }
-    return parsed;
+    return parsed ?? process.env;
   }
 
   public get(k: string): string {
-    let res = '';
     if (!this.env) {
-      runtimeError(ErrorMessages.NO_CONFIG);
+      throw new Error(`ObtainConfig: ${ErrorMessages.NO_CONFIG}`);
     } else if (!this.env[k]) {
-      runtimeError(ErrorMessages.NO_CONFIG_KEY);
-    } else {
-      res = this.env[k];
+      runtimeError(`Cant obtain field: ${k}`);
     }
-
-    return res;
+    return this.env[k] ?? '';
   }
 }
